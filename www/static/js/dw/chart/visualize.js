@@ -329,6 +329,10 @@ define([
     /** Set into `dw.backend.currentVis` the edited visualization (editor side) */
     function loadVis() {
         if (iframe.attr('src') === '') {
+            var src =
+                window.localStorage.getItem('sapper') === 'true'
+                    ? '/preview/' + chart.get('id') + '/?innersvg=1&random='
+                    : '/chart/' + chart.get('id') + '/preview?innersvg=1&random=';
             // load vis in iframe if not done yet
             iframe.attr(
                 'src',
