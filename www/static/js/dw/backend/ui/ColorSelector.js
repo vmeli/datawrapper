@@ -25,7 +25,7 @@ define(['chroma'], function(chroma) {
             var hexEditable = opts.config && opts.config.controls && opts.config.controls.hexEditable;
             var rowCount = opts.config && opts.config.rowCount ? opts.config.rowCount : false;
             ['hue', 'saturation', 'lightness'].forEach(function(key) {
-                if (opts.config) {
+                if (opts.config && opts.config.controls) {
                     colorAxesConfig[key] = opts.config.controls[key];
                 } else {
                     colorAxesConfig[key] = true;
@@ -66,9 +66,16 @@ define(['chroma'], function(chroma) {
 
             addcol(opts.color, bottom);
             // initialize palette colors
-            $.each(opts.palette, function(i, color) {
-                addcol(color, palette, true);
-            });
+
+            if (_.isString(opts.palette[0])) {
+                $.each(opts.palette, function(i, color) {
+                    addcol(color, palette, true);
+                });
+            } else {
+                opts.palette.forEach(function(group, i) {
+                    addColorGroup(group, palette);
+                });
+            }
 
             setColor(opts.color);
 
@@ -87,7 +94,7 @@ define(['chroma'], function(chroma) {
             }, 300);
 
             function setColor(hex, cont) {
-                hex = hex || opts.palette[0];
+                hex = hex || getBaseColor(opts.palette);
                 var lch = chroma(hex).lch();
                 var center = [60, 50, lch[2]];
                 var spread_ = [55, 50, 70];
@@ -152,6 +159,41 @@ define(['chroma'], function(chroma) {
                 return r;
             }
 
+            function addColorGroup(colorGroup, cont) {
+                if (!_.isArray(colorGroup)) {
+                    const $colorGroup = $('<div/>')
+                        .addClass('color-group')
+                        .appendTo(cont);
+
+                    if (colorGroup.name) {
+                        $('<div/>')
+                            .addClass('group-title')
+                            .append(`<span>${colorGroup.name}</span>`)
+                            .appendTo($colorGroup);
+                    }
+
+                    if (colorGroup.colors) {
+                        colorGroup.colors.forEach(function(colors, i) {
+                            const $colors = $('<div/>')
+                                .addClass('colors')
+                                .appendTo($colorGroup);
+
+                            colors.forEach(function(color) {
+                                addcol(color, $colors, true);
+                            });
+                        });
+                    }
+                } else {
+                    const $colors = $('<div/>')
+                        .addClass('colors')
+                        .appendTo(palette);
+
+                    colorGroup.forEach(function(color) {
+                        addcol(color, $colors, true);
+                    });
+                }
+            }
+
             function addcol(color, cont, resizeSwatch) {
                 var swatchDims = rowCount ? (157 - 2 * rowCount) / rowCount : '';
                 var styleString = resizeSwatch && rowCount ? "style='width: " + swatchDims + 'px; height: ' + swatchDims + "px'" : '';
@@ -171,6 +213,16 @@ define(['chroma'], function(chroma) {
                         closePopup();
                     })
                     .appendTo(cont);
+            }
+
+            function getBaseColor(palette) {
+                if (_.isString(palette[0])) {
+                    return palette[0];
+                } else if (_.isArray(palette[0])) {
+                    return palette[0][0];
+                } else {
+                    return palette[0].colors[0][0];
+                }
             }
 
             function body_click(evt) {

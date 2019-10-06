@@ -1266,6 +1266,21 @@ body.cms-mode .row.create-nav {
   border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
+
+.color-selector .group-title {
+  line-height: initial;
+  font-size: 11px;
+  font-weight:bold;
+  text-transform: uppercase;
+  min-height: 5px;
+}
+.color-group {
+    margin-top: 4px;
+}
+.color-group:first-child {
+    margin-top: 0px;
+}
+
 .color-selector .palette {
   line-height: 5px;
   margin-bottom: 10px;
