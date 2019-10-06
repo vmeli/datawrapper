@@ -53,6 +53,7 @@
 
     <style type="text/css">
         {{ themeCSS | raw }}
+        {{ chartCSS | raw }}
         {% if nopointer %}
         body { pointer-events: none }
         {% endif %}
@@ -130,8 +131,9 @@
                                 theme.getThemeData('options.footer.tableCaption') :
                                 theme.getThemeData('options.footer.chartCaption') }}
                             </span>
-                            <span class="chart-byline">{{ chartByline | purify | raw }}
-                            </span>
+
+                            <span class="chart-byline">{{ chartByline | purify | raw }}</span>
+
                             <span class="byline-append">{{ theme.getThemeData('options.footer.bylineAppend') }}</span>
                         </span>
                         {% endif %}
