@@ -160,38 +160,27 @@ define(['chroma'], function(chroma) {
             }
 
             function addColorGroup(colorGroup, cont) {
-                if (!_.isArray(colorGroup)) {
-                    const $colorGroup = $('<div/>')
-                        .addClass('color-group')
-                        .appendTo(cont);
+                // if (!_.isArray(colorGroup)) {
+                if (_.isString(colorGroup)) return;
+                const $colorGroup = $('<div/>')
+                    .addClass('color-group')
+                    .appendTo(cont);
 
-                    if (colorGroup.name) {
-                        $('<div/>')
-                            .addClass('group-title')
-                            .append(`<span>${colorGroup.name}</span>`)
-                            .appendTo($colorGroup);
-                    }
-
-                    if (colorGroup.colors) {
-                        colorGroup.colors.forEach(function(colors, i) {
-                            const $colors = $('<div/>')
-                                .addClass('colors')
-                                .appendTo($colorGroup);
-
-                            colors.forEach(function(color) {
-                                addcol(color, $colors, true);
-                            });
-                        });
-                    }
-                } else {
+                if (colorGroup.name) {
+                    $('<div/>')
+                        .addClass('group-title')
+                        .append(`<span>${colorGroup.name}</span>`)
+                        .appendTo($colorGroup);
+                }
+                colorGroup.colors.forEach(function(colors, i) {
                     const $colors = $('<div/>')
                         .addClass('colors')
-                        .appendTo(palette);
+                        .appendTo($colorGroup);
 
-                    colorGroup.forEach(function(color) {
+                    colors.forEach(function(color) {
                         addcol(color, $colors, true);
                     });
-                }
+                });
             }
 
             function addcol(color, cont, resizeSwatch) {
@@ -218,8 +207,6 @@ define(['chroma'], function(chroma) {
             function getBaseColor(palette) {
                 if (_.isString(palette[0])) {
                     return palette[0];
-                } else if (_.isArray(palette[0])) {
-                    return palette[0][0];
                 } else {
                     return palette[0].colors[0][0];
                 }
