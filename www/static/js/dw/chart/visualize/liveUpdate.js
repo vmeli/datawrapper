@@ -124,7 +124,21 @@ define(function() {
                 }
 
                 __dw.vis.chart().attributes(attrs);
-                __dw.old_attrs = JSON.parse(JSON.stringify(attrs));
+
+                var getCircularReplacer = function() {
+                    var seen = new WeakSet();
+                    return function(key, value) {
+                        if (typeof value === 'object' && value !== null) {
+                            if (seen.has(value)) {
+                                return;
+                            }
+                            seen.add(value);
+                        }
+                        return value;
+                    };
+                };
+
+                __dw.old_attrs = JSON.parse(JSON.stringify(attrs, getCircularReplacer()));
                 // update dataset to reflect changes
                 __dw.vis.chart().load(__dw.params.data);
 
