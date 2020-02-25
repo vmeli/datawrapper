@@ -317,7 +317,7 @@ dw.column = function(name, rows, type) {
         },
 
         /**
-         * returns ith row of the col, as key (purified & filtered)
+         * returns ith row of the col, as key (purified & from original dataset)
          *
          * @param i
          */
@@ -326,7 +326,7 @@ dw.column = function(name, rows, type) {
             var r = origRows;
             if (i < 0) i += r.length;
             if (!rows[i]) return undefined;
-            return dw.utils.purifyHtml((type.name() === 'date' ? rows[i] : origRows[i]),'');
+            return dw.utils.purifyHtml(type.name() === 'date' ? rows[i] : origRows[i], '');
         },
 
         /*
@@ -334,18 +334,18 @@ dw.column = function(name, rows, type) {
          */
         keys: function() {
             var keys = [];
-            rows.forEach(function(r,i){
-                keys.push(column.key(i))
-            })
+            rows.forEach(function(r, i) {
+                keys.push(column.key(i));
+            });
             return _.uniq(keys);
         },
 
         /**
          * apply function to each value
          */
-        each: function(f,unfiltered) {
+        each: function(f) {
             for (var i = 0; i < rows.length; i++) {
-                f(column.val(i,unfiltered), i);
+                f(column.val(i), i);
             }
         },
 
@@ -2611,14 +2611,14 @@ _.extend(dw.visualization.base, {
             var lblCol = me.dataset.column(me.axes()[axis]);
             lblCol.each(function(val, i) {
                 var key = lblCol.type() === 'date' ? lblCol.raw(i) : val;
-                keys.push(dw.utils.purifyHtml(key,''));
+                keys.push(dw.utils.purifyHtml(key, ''));
             }, true);
             return _.uniq(keys);
         }
         return [];
     },
 
-    keyLabel: function(key,axis) {
+    keyLabel: function(key, axis) {
         var me = this;
         var label;
         if (arguments.length === 1) axis = 'labels';
@@ -2626,7 +2626,7 @@ _.extend(dw.visualization.base, {
             var lblCol = me.dataset.column(me.axes()[axis]);
             lblCol.each(function(val, i) {
                 if (!label && key === lblCol.key(i)) {
-                    label = dw.utils.purifyHtml(lblCol.type() === 'date' ? lblCol.raw(i) : lblCol.val(i),'');
+                    label = dw.utils.purifyHtml(lblCol.type() === 'date' ? lblCol.raw(i) : lblCol.val(i), '');
                 }
             });
         }
