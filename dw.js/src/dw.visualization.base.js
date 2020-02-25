@@ -289,23 +289,34 @@ _.extend(dw.visualization.base, {
         return me.axes(returnAsColumns);
     },
 
-    keys: function() {
+    keys: function(axis) {
         var me = this;
-        var axesDef = me.axes();
-        if (axesDef.labels) {
-            var lblCol = me.dataset.column(axesDef.labels);
-            var fmt = me.chart().columnFormatter(lblCol);
+        if (!arguments.length) axis = 'labels';
+        if (me.axes(true)[axis]) {
             var keys = [];
-            lblCol.each(function(val) {
-                keys.push(String(fmt(val)));
-            });
-            return keys;
+            var lblCol = me.dataset.column(me.axes()[axis]);
+            lblCol.each(function(val, i) {
+                var key = lblCol.type() === 'date' ? lblCol.raw(i) : val;
+                keys.push(dw.utils.purifyHtml(key, ''));
+            }, true);
+            return _.uniq(keys);
         }
         return [];
     },
 
-    keyLabel: function(key) {
-        return key;
+    keyLabel: function(key, axis) {
+        var me = this;
+        var label;
+        if (arguments.length === 1) axis = 'labels';
+        if (me.axes(true)[axis]) {
+            var lblCol = me.dataset.column(me.axes()[axis]);
+            lblCol.each(function(val, i) {
+                if (!label && key === lblCol.key(i)) {
+                    label = dw.utils.purifyHtml(lblCol.type() === 'date' ? lblCol.raw(i) : lblCol.val(i), '');
+                }
+            });
+        }
+        return label || key;
     },
 
     /*

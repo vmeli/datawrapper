@@ -109,11 +109,35 @@ dw.column = function(name, rows, type) {
         },
 
         /**
+         * returns ith row of the col, as key (purified & from original dataset)
+         *
+         * @param i
+         */
+        key: function(i) {
+            if (!arguments.length) return undefined;
+            var r = origRows;
+            if (i < 0) i += r.length;
+            if (!rows[i]) return undefined;
+            return dw.utils.purifyHtml(type.name() === 'date' ? rows[i] : origRows[i], '');
+        },
+
+        /*
+         * returns an array of keys
+         */
+        keys: function() {
+            var keys = [];
+            rows.forEach(function(r, i) {
+                keys.push(column.key(i));
+            });
+            return _.uniq(keys);
+        },
+
+        /**
          * apply function to each value
          */
-        each: function(f) {
+        each: function(f, unfiltered) {
             for (var i = 0; i < rows.length; i++) {
-                f(column.val(i), i);
+                f(column.val(i, unfiltered), i);
             }
         },
 
