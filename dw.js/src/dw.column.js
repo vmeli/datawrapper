@@ -115,10 +115,10 @@ dw.column = function(name, rows, type) {
          */
         key: function(i) {
             if (!arguments.length) return undefined;
-            var r = origRows;
+            var r = rows;
             if (i < 0) i += r.length;
             if (!rows[i]) return undefined;
-            return dw.utils.purifyHtml(type.name() === 'date' ? rows[i] : origRows[i], '');
+            return dw.utils.purifyHtml(rows[i]);
         },
 
         /*
