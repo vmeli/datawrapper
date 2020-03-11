@@ -1,9 +1,8 @@
-
-define(
-    ['./options/initCustomColors', './options/syncVisOptions', './options/unsyncVisOptions'],
-
-function(initCustomColors, syncVisOptions, unsyncVisOptions) {
-
+define(['./options/initCustomColors', './options/syncVisOptions', './options/unsyncVisOptions'], function(
+    initCustomColors,
+    syncVisOptions,
+    unsyncVisOptions
+) {
     var _chart, _vis;
 
     return {
@@ -31,7 +30,8 @@ function(initCustomColors, syncVisOptions, unsyncVisOptions) {
                 });
             });
 
-            var type = _chart.get('type'), usrPref = {};
+            var type = _chart.get('type'),
+                usrPref = {};
             try {
                 usrPref = JSON.parse(localStorage.getItem('dw-vis-groups')) || {};
             } catch (e) {}
@@ -40,11 +40,13 @@ function(initCustomColors, syncVisOptions, unsyncVisOptions) {
 
             _.each(usrPref[type], function(val, key) {
                 // initialize state from user preferences
-                $('#vis-options-'+key)[val == 'open' ? 'addClass' : 'removeClass']('group-open');
+                $('#vis-options-' + key)[val == 'open' ? 'addClass' : 'removeClass']('group-open');
             });
 
             $('.vis-option-type-group:not(.notoggle) > label.group-title').click(function() {
-                var $g = $(this).parents('.vis-option-type-group').toggleClass('group-open');
+                var $g = $(this)
+                    .parents('.vis-option-type-group')
+                    .toggleClass('group-open');
                 $(window).resize();
                 try {
                     usrPref[type][$g.data('group-key')] = $g.hasClass('group-open') ? 'open' : 'closed';
@@ -68,8 +70,5 @@ function(initCustomColors, syncVisOptions, unsyncVisOptions) {
         reset: function() {
             unsyncVisOptions(_vis, _chart);
         }
-
-
     };
-
 });
