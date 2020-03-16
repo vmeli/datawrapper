@@ -24,6 +24,7 @@ define(['chroma'], function(chroma) {
             var colorAxesConfig = {};
             var hexEditable = opts.config && opts.config.controls && opts.config.controls.hexEditable;
             var rowCount = opts.config && opts.config.rowCount ? opts.config.rowCount : false;
+            var colorLabels = opts.config && opts.config.colorLabels ? opts.config.colorLabels : false;
             ['hue', 'saturation', 'lightness'].forEach(function(key) {
                 if (opts.config) {
                     colorAxesConfig[key] = opts.config.controls[key];
@@ -66,6 +67,12 @@ define(['chroma'], function(chroma) {
 
             addcol(opts.color, bottom);
             // initialize palette colors
+            if (colorLabels) {
+                var label = $('<div />')
+                    .addClass('swatch-label')
+                    .css('display', 'none')
+                    .appendTo(popup);
+            }
             if (opts.config.groups) {
                 $.each(opts.config.groups, function(i, group) {
                     addGroup(group, palette);
@@ -176,7 +183,7 @@ define(['chroma'], function(chroma) {
             function addcol(color, cont, resizeSwatch) {
                 var swatchDims = rowCount ? (157 - 2 * rowCount) / rowCount : '';
                 var styleString = resizeSwatch && rowCount ? "style='width: " + swatchDims + 'px; height: ' + swatchDims + "px'" : '';
-                $('<div ' + styleString + ' />')
+                var swatch = $('<div ' + styleString + ' />')
                     .addClass('color')
                     .data('color', color)
                     .css('background', color)
@@ -192,8 +199,27 @@ define(['chroma'], function(chroma) {
                         closePopup();
                     })
                     .appendTo(cont);
-            }
 
+                if (colorLabels) {
+                    swatch.mousemove(handleMouseMove);
+                    swatch.mouseleave(handleMouseLeave);
+                }
+            }
+            function handleMouseMove(evt) {
+                var hoveredColor = $(evt.target).data('color');
+                if (Object.keys(colorLabels).includes(hoveredColor)) {
+                    var popupBBox = popup.get(0).getBoundingClientRect();
+                    var xoffset = popupBBox.x;
+                    var yoffset = popupBBox.y;
+                    label.css('display', 'initial');
+                    label.css('left', evt.clientX - xoffset + 5 + 'px');
+                    label.css('top', evt.clientY - yoffset - 28 + 'px');
+                    label.html(colorLabels[hoveredColor]);
+                }
+            }
+            function handleMouseLeave(evt) {
+                label.css('display', 'none');
+            }
             function body_click(evt) {
                 var el = $(evt.target);
                 if (!el.is('.color-selector') && el.parents('.color-selector').length === 0) {

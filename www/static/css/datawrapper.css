@@ -1294,6 +1294,17 @@ body.cms-mode .row.create-nav {
     margin-top: 0px;
 }
 
+.color-selector .swatch-label {
+  position: absolute;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.8);
+  z-index: 3;
+  padding: 2px 4px;
+  border: 1px solid #cccccc;
+  width: fit-content;
+  border-radius: 4px;
+}
+
 .color-selector .color-group {
     margin-top: 5px;
 }
